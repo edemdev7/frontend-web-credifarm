@@ -1,0 +1,137 @@
+[
+  {
+    "id": 1,
+    "julayaId": "JUL001",
+    "amount": 1500,
+    "clientNumber": "+2250701234567",
+    "account": "AC001",
+    "date": "2025-01-01",
+    "loanConciled": "CONCILIED"
+  },
+  {
+    "id": 2,
+    "julayaId": "JUL002",
+    "amount": 2500,
+    "clientNumber": "+2250509876543",
+    "account": "AC002",
+    "date": "2025-01-02",
+    "loanConciled": "NO_CONCILIED"
+  },
+  {
+    "id": 3,
+    "julayaId": "JUL003",
+    "amount": 3200,
+    "clientNumber": "+2250101122334",
+    "account": "AC003",
+    "date": "2025-01-03",
+    "loanConciled": "CONCILIED"
+  },
+  {
+    "id": 4,
+    "julayaId": "JUL004",
+    "amount": 1000,
+    "clientNumber": "+2250705566778",
+    "account": "AC004",
+    "date": "2025-01-04",
+    "loanConciled": "NO_CONCILIED"
+  },
+  {
+    "id": 5,
+    "julayaId": "JUL005",
+    "amount": 500,
+    "clientNumber": "+2250506677889",
+    "account": "AC005",
+    "date": "2025-01-05",
+    "loanConciled": "CONCILIED"
+  },
+  {
+    "id": 6,
+    "julayaId": "JUL006",
+    "amount": 800,
+    "clientNumber": "+2250109988776",
+    "account": "AC006",
+    "date": "2025-01-06",
+    "loanConciled": "CONCILIED"
+  },
+  {
+    "id": 7,
+    "julayaId": "JUL007",
+    "amount": 2200,
+    "clientNumber": "+2250703344552",
+    "account": "AC007",
+    "date": "2025-01-07",
+    "loanConciled": "NO_CONCILIED"
+  },
+  {
+    "id": 8,
+    "julayaId": "JUL008",
+    "amount": 4000,
+    "clientNumber": "+2250502233445",
+    "account": "AC008",
+    "date": "2025-01-08",
+    "loanConciled": "CONCILIED"
+  },
+  {
+    "id": 9,
+    "julayaId": "JUL009",
+    "amount": 1400,
+    "clientNumber": "+2250107788990",
+    "account": "AC009",
+    "date": "2025-01-09",
+    "loanConciled": "CONCILIED"
+  },
+  {
+    "id": 10,
+    "julayaId": "JUL010",
+    "amount": 1600,
+    "clientNumber": "+2250705566778",
+    "account": "AC010",
+    "date": "2025-01-10",
+    "loanConciled": "NO_CONCILIED"
+  },
+  {
+    "id": 11,
+    "julayaId": "JUL011",
+    "amount": 3000,
+    "clientNumber": "+2250506655443",
+    "account": "AC011",
+    "date": "2025-01-11",
+    "loanConciled": "CONCILIED"
+  },
+  {
+    "id": 12,
+    "julayaId": "JUL012",
+    "amount": 700,
+    "clientNumber": "+2250103344556",
+    "account": "AC012",
+    "date": "2025-01-12",
+    "loanConciled": "NO_CONCILIED"
+  },
+  {
+    "id": 13,
+    "julayaId": "JUL013",
+    "amount": 3500,
+    "clientNumber": "+2250709988776",
+    "account": "AC013",
+    "date": "2025-01-13",
+    "loanConciled": "CONCILIED"
+  },
+  {
+    "id": 14,
+    "julayaId": "JUL014",
+    "amount": 1800,
+    "clientNumber": "+2250502233445",
+    "account": "AC014",
+    "date": "2025-01-14",
+    "loanConciled": "CONCILIED"
+  },
+  {
+    "id": 15,
+    "julayaId": "JUL015",
+    "amount": 600,
+    "clientNumber": "+2250105566778",
+    "account": "AC015",
+    "date": "2025-01-15",
+    "loanConciled": "NO_CONCILIED"
+  }
+]

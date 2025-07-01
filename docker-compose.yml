@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: credifarm
+    ports:
+      - "80:3340"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    env_file:
+      - .env
+    restart: unless-stopped

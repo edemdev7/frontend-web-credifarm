@@ -1,0 +1,54 @@
+# Build docker
+docker build --no-cache -t credifarm .
+docker run -p 80:80 credifarm
+
+
+# On your server:
+
+# 1. Install Docker if not already installed
+sudo apt update
+sudo apt install docker.io -y
+
+# 2. Install Nginx
+sudo apt install nginx -y
+
+# 3. Copy your Nginx configuration
+sudo cp nginx-config.conf /etc/nginx/sites-available/credifarm.africa
+sudo ln -s /etc/nginx/sites-available/credifarm.africa /etc/nginx/sites-enabled/
+sudo nginx -t  # Test configuration
+sudo systemctl restart nginx
+
+# 4. Set up SSL with Let's Encrypt
+sudo apt install certbot python3-certbot-nginx -y
+sudo certbot --nginx -d credifarm.africa -d www.credifarm.africa
+
+# 5. Run your Docker container
+docker build -t credifarm .
+docker run -d --restart unless-stopped -p 3340:3340 credifarm
+
+
+# Setup SSL Certificates
+sudo apt install certbot python3-certbot-nginx -y
+sudo certbot --nginx -d credifarm.africa -d www.credifarm.africa
+
+
+
+# SSH into your server
+ssh user@your-server-ip
+
+# Create the Nginx configuration file
+sudo nano /etc/nginx/sites-available/credifarm.africa
+
+# Paste the content of the nginx configuration file here
+# (Use the HTTPS version if you want SSL, which is recommended)
+
+# Save and exit (Ctrl+X, then Y, then Enter in nano)
+
+# Create a symbolic link to enable the site
+sudo ln -s /etc/nginx/sites-available/credifarm.africa /etc/nginx/sites-enabled/
+
+# Test the Nginx configuration
+sudo nginx -t
+
+# If the test passes, restart Nginx
+sudo systemctl restart nginx
