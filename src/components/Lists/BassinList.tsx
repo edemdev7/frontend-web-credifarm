@@ -186,7 +186,7 @@ const BassinList: FC = () => {
   const handleUnassign = async (bassin: IBassin) => {
     if (bassin.pisciculteur_assigne && confirm('Êtes-vous sûr de vouloir désassigner ce bassin ?')) {
       try {
-        await unassignBassin(bassin.id, bassin.pisciculteur.id);
+        await unassignBassin(bassin.id, bassin.pisciculteur_assigne.id);
         toast.success('Bassin désassigné avec succès');
       } catch (error) {
         toast.error('Erreur lors de la désassignation du bassin');
@@ -338,7 +338,7 @@ const BassinList: FC = () => {
                 <Edit className="w-4 h-4" />
               </Button>
             </Tooltip>
-            {bassin.pisciculteur ? (
+            {bassin.pisciculteur_assigne ? (
               <Tooltip content="Désassigner">
                 <Button
                   isIconOnly
@@ -394,6 +394,155 @@ const BassinList: FC = () => {
   if (bassins.length === 0) {
     console.log('Affichage de l\'état vide - bassins.length:', bassins.length);
     return (
+      <>
+        <div className="flex flex-col gap-4">
+          <div className="flex justify-between items-center">
+            <Input
+              isClearable
+              className="w-full sm:max-w-[44%]"
+              placeholder="Rechercher..."
+              startContent={<Search className="w-4 h-4 text-default-400" />}
+              value={filterValue}
+              onValueChange={setFilterValue}
+            />
+            <Button
+              color="primary"
+              endContent={<Plus className="w-4 h-4" />}
+              onPress={() => {
+                console.log('Bouton Ajouter cliqué');
+                handleAdd();
+              }}
+            >
+              Ajouter un bassin
+            </Button>
+          </div>
+          
+          <div className="flex flex-col items-center justify-center h-64 text-center">
+            <div className="text-gray-500 mb-4">
+              <Fish className="w-16 h-16 mx-auto mb-4" />
+              <h3 className="text-lg font-medium mb-2">Aucun bassin trouvé</h3>
+              <p className="text-sm">Commencez par ajouter votre premier bassin</p>
+            </div>
+            <Button
+              color="primary"
+              endContent={<Plus className="w-4 h-4" />}
+              onPress={() => {
+                console.log('Bouton Ajouter cliqué');
+                handleAdd();
+              }}
+            >
+              Ajouter un bassin
+            </Button>
+          </div>
+        </div>
+        {/* Modal pour créer/modifier un bassin */}
+        <Modal isOpen={isOpen} onClose={onClose} size="2xl">
+          <ModalContent>
+            <form onSubmit={(e) => {
+              e.preventDefault();
+              const formData = new FormData(e.target as HTMLFormElement);
+              const values = {
+                nom: formData.get('nom'),
+                superficie: formData.get('superficie'),
+                profondeur: formData.get('profondeur'),
+                type: formData.get('type'),
+                capacite_max: formData.get('capacite_max'),
+                type_poisson: formData.get('type_poisson'),
+                region_id: formData.get('region_id'),
+                statut: formData.get('statut'),
+              };
+              handleSubmit(values);
+            }}>
+              <ModalHeader>
+                {editingBassin ? 'Modifier le bassin' : 'Ajouter un bassin'}
+              </ModalHeader>
+              <ModalBody>
+                <div className="flex flex-col gap-4">
+                  <Input
+                    label="Nom"
+                    name="nom"
+                    defaultValue={editingBassin?.nom}
+                    required
+                  />
+                  <Input
+                    type="number"
+                    label="Superficie (m²)"
+                    name="superficie"
+                    defaultValue={editingBassin?.superficie?.toString()}
+                    required
+                  />
+                  <Input
+                    type="number"
+                    label="Profondeur (m)"
+                    name="profondeur"
+                    min="0"
+                    step="0.1"
+                    defaultValue={editingBassin?.profondeur?.toString()}
+                    required
+                  />
+                  <Input
+                    label="Type"
+                    name="type"
+                    placeholder="Ex: Bassin d'irrigation, Bassin de pêche..."
+                    defaultValue={editingBassin?.type}
+                    required
+                  />
+                  <Input
+                    type="number"
+                    label="Capacité maximale"
+                    name="capacite_max"
+                    placeholder="Optionnel"
+                  />
+                  <Input
+                    label="Type de poisson"
+                    name="type_poisson"
+                    placeholder="Optionnel"
+                  />
+                  <Select
+                    label="Région"
+                    name="region_id"
+                    defaultSelectedKeys={editingBassin?.region ? [editingBassin.region.id.toString()] : []}
+                    required
+                    isLoading={loadingRegions}
+                    startContent={loadingRegions ? <Spinner size="sm" /> : undefined}
+                  >
+                    {regions.map(region => (
+                      <SelectItem key={region.id} value={region.id}>
+                        {region.nom}
+                      </SelectItem>
+                    ))}
+                  </Select>
+                  {editingBassin && (
+                    <Select
+                      label="Statut"
+                      name="statut"
+                      defaultSelectedKeys={[editingBassin.statut]}
+                      required
+                    >
+                      <SelectItem key="ACTIF" value="ACTIF">Actif</SelectItem>
+                      <SelectItem key="EN_MAINTENANCE" value="EN_MAINTENANCE">En maintenance</SelectItem>
+                      <SelectItem key="INACTIF" value="INACTIF">Inactif</SelectItem>
+                    </Select>
+                  )}
+                </div>
+              </ModalBody>
+              <ModalFooter>
+                <Button color="danger" variant="light" onPress={onClose}>
+                  Annuler
+                </Button>
+                <Button color="primary" type="submit">
+                  {editingBassin ? 'Modifier' : 'Ajouter'}
+                </Button>
+              </ModalFooter>
+            </form>
+          </ModalContent>
+        </Modal>
+      </>
+    );
+  }
+
+  return (
+    <>
       <div className="flex flex-col gap-4">
         <div className="flex justify-between items-center">
           <Input
@@ -415,90 +564,47 @@ const BassinList: FC = () => {
             Ajouter un bassin
           </Button>
         </div>
-        
-        <div className="flex flex-col items-center justify-center h-64 text-center">
-          <div className="text-gray-500 mb-4">
-            <Fish className="w-16 h-16 mx-auto mb-4" />
-            <h3 className="text-lg font-medium mb-2">Aucun bassin trouvé</h3>
-            <p className="text-sm">Commencez par ajouter votre premier bassin</p>
-          </div>
-          <Button
-            color="primary"
-            endContent={<Plus className="w-4 h-4" />}
-            onPress={() => {
-              console.log('Bouton Ajouter cliqué');
-              handleAdd();
-            }}
-          >
-            Ajouter un bassin
-          </Button>
-        </div>
-      </div>
-    );
-  }
 
-  return (
-    <div className="flex flex-col gap-4">
-      <div className="flex justify-between items-center">
-        <Input
-          isClearable
-          className="w-full sm:max-w-[44%]"
-          placeholder="Rechercher..."
-          startContent={<Search className="w-4 h-4 text-default-400" />}
-          value={filterValue}
-          onValueChange={setFilterValue}
-        />
-        <Button
-          color="primary"
-          endContent={<Plus className="w-4 h-4" />}
-          onPress={() => {
-            console.log('Bouton Ajouter cliqué');
-            handleAdd();
-          }}
+        <Table
+          aria-label="Liste des bassins"
+          bottomContent={
+            <div className="flex w-full justify-center">
+              <Pagination
+                isCompact
+                showControls
+                showShadow
+                color="primary"
+                page={page}
+                total={pages}
+                onChange={setPage}
+              />
+            </div>
+          }
+          sortDescriptor={sortDescriptor}
+          topContentPlacement="outside"
+          onSortChange={setSortDescriptor}
         >
-          Ajouter un bassin
-        </Button>
+          <TableHeader columns={COLUMNS}>
+            {(column) => (
+              <TableColumn
+                key={column.uid}
+                allowsSorting={column.sortable}
+              >
+                {column.name}
+              </TableColumn>
+            )}
+          </TableHeader>
+          <TableBody items={items}>
+            {(item) => (
+              <TableRow key={item.id}>
+                {(columnKey) => (
+                  <TableCell>{renderCell(item, columnKey.toString())}</TableCell>
+                )}
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
       </div>
-
-      <Table
-        aria-label="Liste des bassins"
-        bottomContent={
-          <div className="flex w-full justify-center">
-            <Pagination
-              isCompact
-              showControls
-              showShadow
-              color="primary"
-              page={page}
-              total={pages}
-              onChange={setPage}
-            />
-          </div>
-        }
-        sortDescriptor={sortDescriptor}
-        topContentPlacement="outside"
-        onSortChange={setSortDescriptor}
-      >
-        <TableHeader columns={COLUMNS}>
-          {(column) => (
-            <TableColumn
-              key={column.uid}
-              allowsSorting={column.sortable}
-            >
-              {column.name}
-            </TableColumn>
-          )}
-        </TableHeader>
-        <TableBody items={items}>
-          {(item) => (
-            <TableRow key={item.id}>
-              {(columnKey) => (
-                <TableCell>{renderCell(item, columnKey.toString())}</TableCell>
-              )}
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
 
       {/* Modal pour créer/modifier un bassin */}
       <Modal isOpen={isOpen} onClose={onClose} size="2xl">
@@ -659,7 +765,7 @@ const BassinList: FC = () => {
         }}
         bassin={selectedBassinForDetails}
       />
-    </div>
+    </>
   );
 };
 
