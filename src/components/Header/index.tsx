@@ -31,14 +31,15 @@ const Header: FC = () => {
     const fetchNavItems = async () => {
       const items: NavItem[] = role === "COO" ? [
         { path: "/cooperative/dashboard", label: "TABLEAU DE BORD" },
-        { path: "/cooperative/loans", label: "AVANCE INTRANTS" },
         { path: "/cooperative/membership-request", label: "DEMANDES D'ADHESION" },
         { path: "/cooperative/members", label: "MEMBRES" },
       ] : [
         { path: "/admin/dashboard", label: "TABLEAU DE BORD" },
         { path: "/admin/repository", label: "REFERENTIEL" },
-        { path: "/admin/loans", label: "AVANCE INTRANTS" },
-      ].filter((item): item is NavItem => item !== null);
+        { path: "/admin/bassins", label: "BASSINS D'EAU" },
+        { path: "/admin/calendrier-recoltes", label: "CALENDRIER DE RÉCOLTES" },
+        { path: "/admin/calendrier-intrants", label: "CALENDRIER D'AVANCES SUR INTRANTS" },
+      ];
       setNavItems(items);
     };
 

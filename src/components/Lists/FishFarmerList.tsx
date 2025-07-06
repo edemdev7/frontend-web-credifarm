@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import { fetchRegions } from "../../api/regions";
 import { fetchDepartments } from "../../api/department";
 import ActivityModal from "../Activity/ActivityModal";
+import { useNavigate } from "react-router-dom";
 
 const COLUMNS = [
   { name: "ID", uid: "id" },
@@ -18,7 +19,6 @@ const COLUMNS = [
   { name: "Éligible SOA", uid: "eligible_soa" },
   { name: "Score Éligibilité", uid: "eligibility_score" },
   { name: "Région", uid: "region" },
-  { name: "Actions", uid: "actions" },
 ];
 
 const ROWS_PER_PAGE = 8;
@@ -38,6 +38,7 @@ const calculateEligibilityScore = (fishFarmer: IFishFarmer) => {
 };
 
 const FishFarmerList: FC = () => {
+  const navigate = useNavigate();
   const { 
     fishFarmers, 
     fishFarmerBasins,
@@ -144,6 +145,10 @@ const FishFarmerList: FC = () => {
     } catch {
       toast.error("Erreur lors de la désassignation");
     }
+  };
+
+  const handleRowClick = (fishFarmerId: number) => {
+    navigate(`/admin/pisciculteurs/${fishFarmerId}`);
   };
 
   const paginated = useMemo(() => {
@@ -281,7 +286,11 @@ const FishFarmerList: FC = () => {
           items={paginated}
         >
           {(fishFarmer) => (
-            <TableRow key={fishFarmer.id}>
+            <TableRow 
+              key={fishFarmer.id}
+              className="cursor-pointer hover:bg-gray-100 transition-colors"
+              onClick={() => handleRowClick(fishFarmer.id)}
+            >
               <TableCell>{fishFarmer.id}</TableCell>
               <TableCell>{fishFarmer.nom}</TableCell>
               <TableCell>{fishFarmer.prenom}</TableCell>
@@ -300,35 +309,6 @@ const FishFarmerList: FC = () => {
                 </Chip>
               </TableCell>
               <TableCell>{fishFarmer.region?.nom || '-'}</TableCell>
-              <TableCell>
-                <Dropdown>
-                  <DropdownTrigger>
-                    <Button isIconOnly size="sm" variant="light">
-                      <i className="fa-solid fa-ellipsis-vertical"></i>
-                    </Button>
-                  </DropdownTrigger>
-                  <DropdownMenu>
-                    <DropdownItem key="view" onPress={() => handleView(fishFarmer)}>
-                      Voir
-                    </DropdownItem>
-                    <DropdownItem key="edit" onPress={() => handleEdit(fishFarmer)}>
-                      Modifier
-                    </DropdownItem>
-                    <DropdownItem key="status" onPress={() => handleStatusUpdate(fishFarmer)}>
-                      Gérer statut
-                    </DropdownItem>
-                    <DropdownItem key="viewActivities" onPress={() => handleViewActivities(fishFarmer)}>
-                      Voir activités
-                    </DropdownItem>
-                    <DropdownItem key="viewBasins" onPress={() => handleViewBasins(fishFarmer)}>
-                      Voir bassins
-                    </DropdownItem>
-                    <DropdownItem key="delete" className="text-danger" onPress={() => handleDelete(fishFarmer)}>
-                      Supprimer
-                    </DropdownItem>
-                  </DropdownMenu>
-                </Dropdown>
-              </TableCell>
             </TableRow>
           )}
         </TableBody>

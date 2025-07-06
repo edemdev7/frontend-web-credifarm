@@ -95,14 +95,11 @@ const ControlPanel = () => {
 
   const tables: Table[] = [
     superAdmin && { id: 1, name: 'Administrateurs', icon: <Eye /> },
-    { id: 2, name: 'Bassins d\'eau', icon: <Droplet /> },
     { id: 3, name: 'Pisciculteurs', icon: <User /> },
     { id: 4, name: 'Régions', icon: <Map /> },
     { id: 5, name: 'Départements', icon: <Map /> },
     { id: 6, name: 'Espèces de poissons', icon: <Leaf /> },
     { id: 7, name: 'Aliments pour poissons', icon: <Settings /> },
-    { id: 8, name: 'Calendrier de récoltes', icon: <Leaf /> },
-    { id: 9, name: 'Calendrier d\'avances sur intrants', icon: <Settings /> },
   ].filter(Boolean) as Table[];
   
   const [userData, setUserData] = useState([
@@ -773,8 +770,6 @@ const ControlPanel = () => {
     switch (selectedTable.id) {
       case 1:
         return <AdminList />;
-      case 2:
-        return <BassinList />;
       case 3:
         return <FishFarmerList />;
       case 4:
@@ -785,106 +780,6 @@ const ControlPanel = () => {
         return <FishSpeciesList />;
       case 7:
         return <FishFoodList />;
-      case 8:
-        return (
-          <div className="bg-white rounded shadow p-4 overflow-x-auto">
-            <h2 className="text-lg font-bold mb-4">Calendrier de récoltes</h2>
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50 sticky top-0 z-10">
-                <tr>
-                  <th className="px-4 py-2 text-left text-xs font-bold text-gray-700 uppercase">Bassin</th>
-                  <th className="px-4 py-2 text-left text-xs font-bold text-gray-700 uppercase">Type de poisson</th>
-                  <th className="px-4 py-2 text-left text-xs font-bold text-gray-700 uppercase">Date prévue</th>
-                  <th className="px-4 py-2 text-left text-xs font-bold text-gray-700 uppercase">Quantité prévue (kg)</th>
-                  <th className="px-4 py-2 text-left text-xs font-bold text-gray-700 uppercase">Statut</th>
-                  <th className="px-4 py-2 text-left text-xs font-bold text-gray-700 uppercase">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {mockHarvestCalendar.map((item, idx) => {
-                  const today = new Date().toISOString().slice(0, 10);
-                  let color = '';
-                  let statutLabel = item.statut;
-                  if (item.date > today && item.statut !== 'Terminé') { color = 'bg-red-100 text-red-800'; statutLabel = 'À venir'; }
-                  else if (item.date === today && item.statut !== 'Terminé') { color = 'bg-yellow-100 text-yellow-800'; statutLabel = "Aujourd'hui"; }
-                  else if (item.statut === 'Terminé') { color = 'bg-green-100 text-green-800'; statutLabel = 'Terminé'; }
-                  if (statutLabel === 'À venir') color = 'bg-red-100 text-red-800';
-                  else if (statutLabel === "Aujourd'hui") color = 'bg-yellow-100 text-yellow-800';
-                  else if (statutLabel === 'Terminé') color = 'bg-green-100 text-green-800';
-                  return (
-                    <tr key={item.id} className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                      <td className="px-4 py-2 font-semibold">{item.bassin}</td>
-                      <td className="px-4 py-2">{item.poisson}</td>
-                      <td className="px-4 py-2">{new Date(item.date).toLocaleDateString('fr-FR')}</td>
-                      <td className="px-4 py-2">{item.quantite}</td>
-                      <td className="px-4 py-2">
-                        <span className={`px-3 py-1 rounded-full text-xs font-bold shadow ${color}`}>{statutLabel}</span>
-                      </td>
-                      <td className="px-4 py-2 flex gap-2">
-                        <button onClick={() => handleFinishHarvest(item.id)} className="text-green-700 hover:text-white hover:bg-green-500 border border-green-500 p-1 rounded-full transition" title="Marquer comme fini">
-                          ✓
-                        </button>
-                        <button onClick={() => handleDeleteHarvest(item.id)} className="text-red-700 hover:text-white hover:bg-red-500 border border-red-500 p-1 rounded-full transition" title="Supprimer">
-                          🗑️
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        );
-      case 9:
-        return (
-          <div className="bg-white rounded shadow p-4 overflow-x-auto">
-            <h2 className="text-lg font-bold mb-4">Calendrier d'avances sur intrants</h2>
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50 sticky top-0 z-10">
-                <tr>
-                  <th className="px-4 py-2 text-left text-xs font-bold text-gray-700 uppercase">Bassin</th>
-                  <th className="px-4 py-2 text-left text-xs font-bold text-gray-700 uppercase">Type d'intrant</th>
-                  <th className="px-4 py-2 text-left text-xs font-bold text-gray-700 uppercase">Date prévue</th>
-                  <th className="px-4 py-2 text-left text-xs font-bold text-gray-700 uppercase">Montant (FCFA)</th>
-                  <th className="px-4 py-2 text-left text-xs font-bold text-gray-700 uppercase">Statut</th>
-                  <th className="px-4 py-2 text-left text-xs font-bold text-gray-700 uppercase">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {mockInputCalendar.map((item, idx) => {
-                  const today = new Date().toISOString().slice(0, 10);
-                  let color = '';
-                  let statutLabel = item.statut;
-                  if (item.date > today && item.statut !== 'Terminé') { color = 'bg-red-100 text-red-800'; statutLabel = 'À venir'; }
-                  else if (item.date === today && item.statut !== 'Terminé') { color = 'bg-yellow-100 text-yellow-800'; statutLabel = "Aujourd'hui"; }
-                  else if (item.statut === 'Terminé') { color = 'bg-green-100 text-green-800'; statutLabel = 'Terminé'; }
-                  if (statutLabel === 'À venir') color = 'bg-red-100 text-red-800';
-                  else if (statutLabel === "Aujourd'hui") color = 'bg-yellow-100 text-yellow-800';
-                  else if (statutLabel === 'Terminé') color = 'bg-green-100 text-green-800';
-                  return (
-                    <tr key={item.id} className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                      <td className="px-4 py-2 font-semibold">{item.bassin}</td>
-                      <td className="px-4 py-2">{item.intrant}</td>
-                      <td className="px-4 py-2">{new Date(item.date).toLocaleDateString('fr-FR')}</td>
-                      <td className="px-4 py-2">{item.montant.toLocaleString()}</td>
-                      <td className="px-4 py-2">
-                        <span className={`px-3 py-1 rounded-full text-xs font-bold shadow ${color}`}>{statutLabel}</span>
-                      </td>
-                      <td className="px-4 py-2 flex gap-2">
-                        <button onClick={() => handleFinishInput(item.id)} className="text-green-700 hover:text-white hover:bg-green-500 border border-green-500 p-1 rounded-full transition" title="Marquer comme fini">
-                          ✓
-                        </button>
-                        <button onClick={() => handleDeleteInput(item.id)} className="text-red-700 hover:text-white hover:bg-red-500 border border-red-500 p-1 rounded-full transition" title="Supprimer">
-                          🗑️
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        );
       default:
         return null;
     }

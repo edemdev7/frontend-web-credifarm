@@ -5,6 +5,8 @@ export interface IBassin {
   superficie: string | number; // Le backend retourne parfois une string
   profondeur?: string | number; // Le backend retourne parfois une string
   type?: string;
+  capacite_max?: number;
+  type_poisson?: string;
   description?: string | null;
   est_actif?: boolean;
   statut: 'ACTIF' | 'INACTIF' | 'EN_MAINTENANCE';
@@ -48,6 +50,9 @@ export interface IUpdateBassin {
   profondeur?: number;
   type?: string;
   statut?: 'ACTIF' | 'INACTIF' | 'EN_MAINTENANCE';
+  capacite_max?: number;
+  type_poisson?: string;
+  description?: string;
 }
 
 export interface IAssignBassin {

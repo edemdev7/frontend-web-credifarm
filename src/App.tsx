@@ -6,6 +6,11 @@ import MetaData from "./components/MetaData";
 import PageTransition from "./components/PageTransition";
 import MainLayout from "./layouts/MainLayout";
 import Conciliations from "./pages/Conciliations";
+import HarvestCalendarPage from './components/Lists/HarvestCalendarPage';
+import InputCalendarPage from './components/Lists/InputCalendarPage';
+import BassinList from './components/Lists/BassinList';
+import BassinDetailsPage from './components/Lists/BassinDetailsPage';
+import FishFarmerDetailsPage from './components/Lists/FishFarmerDetailsPage';
 
 // Lazy loading des pages
 const CrmRetailers = lazy(() => import("./pages/CrmRetailers"));
@@ -139,6 +144,11 @@ const App: FC = () => {
                     </Suspense>
                   }
               />
+              <Route path="/admin/bassins" element={<BassinList />} />
+              <Route path="/admin/calendrier-recoltes" element={<HarvestCalendarPage />} />
+              <Route path="/admin/calendrier-intrants" element={<InputCalendarPage />} />
+              <Route path="/admin/bassins/:id" element={<BassinDetailsPage />} />
+              <Route path="/admin/pisciculteurs/:id" element={<FishFarmerDetailsPage />} />
 
               {/* <Route
                 path="/"
