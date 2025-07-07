@@ -95,7 +95,6 @@ const ControlPanel = () => {
 
   const tables: Table[] = [
     superAdmin && { id: 1, name: 'Administrateurs', icon: <Eye /> },
-    { id: 3, name: 'Pisciculteurs', icon: <User /> },
     { id: 4, name: 'Régions', icon: <Map /> },
     { id: 5, name: 'Départements', icon: <Map /> },
     { id: 6, name: 'Espèces de poissons', icon: <Leaf /> },
@@ -770,8 +769,6 @@ const ControlPanel = () => {
     switch (selectedTable.id) {
       case 1:
         return <AdminList />;
-      case 3:
-        return <FishFarmerList />;
       case 4:
         return <RegionList />;
       case 5:

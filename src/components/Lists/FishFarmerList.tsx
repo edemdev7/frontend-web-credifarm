@@ -204,8 +204,8 @@ const FishFarmerList: FC = () => {
   }
 
   return (
-    <div className="p-4">
-      <div className="flex flex-wrap gap-2 mb-4 items-end">
+    <div className="pt-[70px] pb-5 px-4 max-w-7xl mx-auto">
+      <div className="flex flex-wrap gap-2 mb-4 items-end justify-center">
         <Input
           placeholder="Rechercher..."
           value={filterValue}
@@ -266,17 +266,21 @@ const FishFarmerList: FC = () => {
         <Button color="primary" onClick={handleCreate}>Ajouter</Button>
       </div>
       
-      <Table
-        aria-label="Liste des pisciculteurs"
-        isHeaderSticky
-        bottomContent={
-          <Pagination 
-            page={page} 
-            total={Math.ceil(fishFarmers.length / ROWS_PER_PAGE)} 
-            onChange={setPage} 
-          />
-        }
-      >
+      <div className="flex justify-center">
+        <Table
+          aria-label="Liste des pisciculteurs"
+          isHeaderSticky
+          className="w-full max-w-6xl"
+          bottomContent={
+            <div className="flex justify-center">
+              <Pagination 
+                page={page} 
+                total={Math.ceil(fishFarmers.length / ROWS_PER_PAGE)} 
+                onChange={setPage} 
+              />
+            </div>
+          }
+        >
         <TableHeader columns={COLUMNS}>
           {(column) => <TableColumn key={column.uid}>{column.name}</TableColumn>}
         </TableHeader>
@@ -313,6 +317,7 @@ const FishFarmerList: FC = () => {
           )}
         </TableBody>
       </Table>
+      </div>
       
       {isModalOpen && (
         <FishFarmerModal

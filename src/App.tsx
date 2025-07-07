@@ -10,6 +10,7 @@ import HarvestCalendarPage from './components/Lists/HarvestCalendarPage';
 import InputCalendarPage from './components/Lists/InputCalendarPage';
 import BassinList from './components/Lists/BassinList';
 import BassinDetailsPage from './components/Lists/BassinDetailsPage';
+import FishFarmerList from './components/Lists/FishFarmerList';
 import FishFarmerDetailsPage from './components/Lists/FishFarmerDetailsPage';
 
 // Lazy loading des pages
@@ -144,6 +145,7 @@ const App: FC = () => {
                     </Suspense>
                   }
               />
+              <Route path="/admin/pisciculteurs" element={<FishFarmerList />} />
               <Route path="/admin/bassins" element={<BassinList />} />
               <Route path="/admin/calendrier-recoltes" element={<HarvestCalendarPage />} />
               <Route path="/admin/calendrier-intrants" element={<InputCalendarPage />} />

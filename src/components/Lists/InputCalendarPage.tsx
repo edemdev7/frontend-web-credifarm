@@ -24,7 +24,8 @@ const InputCalendarPage = () => {
   };
 
   return (
-    <div className="bg-white rounded shadow p-4 overflow-x-auto flex flex-col items-center w-full">
+    <div className="pt-[70px] pb-5 px-4 max-w-7xl mx-auto">
+      <div className="bg-white rounded shadow p-4 overflow-x-auto flex flex-col items-center w-full">
       <h2 className="text-lg font-bold mb-4 text-center w-full">Calendrier d'avances sur intrants</h2>
       <div className="w-full flex justify-center mb-4">
         <button
@@ -78,6 +79,7 @@ const InputCalendarPage = () => {
           })}
         </tbody>
       </table>
+      </div>
     </div>
   );
 };

@@ -36,6 +36,7 @@ const Header: FC = () => {
       ] : [
         { path: "/admin/dashboard", label: "TABLEAU DE BORD" },
         { path: "/admin/repository", label: "REFERENTIEL" },
+        { path: "/admin/pisciculteurs", label: "PISCICULTEURS" },
         { path: "/admin/bassins", label: "BASSINS D'EAU" },
         { path: "/admin/calendrier-recoltes", label: "CALENDRIER DE RÉCOLTES" },
         { path: "/admin/calendrier-intrants", label: "CALENDRIER D'AVANCES SUR INTRANTS" },
