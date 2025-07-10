@@ -493,6 +493,8 @@ const StatusModal: React.FC<{
     status: fishFarmer.status,
     compte_actif: fishFarmer.compte_actif,
     eligible_soa: fishFarmer.eligible_soa,
+    eligibility_status: fishFarmer.eligibility_status || '',
+    eligibility_reason: fishFarmer.eligibility_reason || '',
   });
 
   const handleSubmit = async () => {
@@ -526,6 +528,7 @@ const StatusModal: React.FC<{
                 onValueChange={(value) => setStatusData({...statusData, compte_actif: value})}
               />
             </div>
+            {/*
             <div className="flex items-center justify-between">
               <span>Éligible SOA</span>
               <Switch
@@ -533,6 +536,32 @@ const StatusModal: React.FC<{
                 onValueChange={(value) => setStatusData({...statusData, eligible_soa: value})}
               />
             </div>
+            */}
+            <div>
+              <label className="block text-sm font-medium mb-1">Statut d'éligibilité</label>
+              <select
+                className="border rounded px-2 py-1 w-full"
+                value={statusData.eligibility_status}
+                onChange={e => setStatusData(prev => ({ ...prev, eligibility_status: e.target.value as any }))}
+              >
+                <option value="">-- Sélectionner --</option>
+                <option value="GO">Go</option>
+                <option value="NON_GO">Non Go</option>
+                <option value="NON_GO_CONDITIONNE">Non Go conditionné</option>
+              </select>
+            </div>
+            {statusData.eligibility_status === 'NON_GO' && (
+              <div>
+                <label className="block text-sm font-medium mb-1">Raison du Non Go</label>
+                <Textarea
+                  value={statusData.eligibility_reason}
+                  onChange={e => setStatusData(prev => ({ ...prev, eligibility_reason: e.target.value }))}
+                  placeholder="Indiquez la raison du Non Go..."
+                  rows={2}
+                  required
+                />
+              </div>
+            )}
           </div>
         </ModalBody>
         <ModalFooter>

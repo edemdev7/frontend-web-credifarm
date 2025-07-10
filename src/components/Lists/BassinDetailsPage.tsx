@@ -74,6 +74,51 @@ const BassinDetailsPage: React.FC = () => {
   // États pour les modals des calendriers
   const { isOpen: isRecolteModalOpen, onOpen: onRecolteModalOpen, onClose: onRecolteModalClose } = useDisclosure();
   const { isOpen: isIntrantModalOpen, onOpen: onIntrantModalOpen, onClose: onIntrantModalClose } = useDisclosure();
+
+  // Filtres pour les calendriers
+  const [recolteFilter, setRecolteFilter] = useState('all');
+  const [intrantFilter, setIntrantFilter] = useState('all');
+
+  // Génère des dates fictives si le calendrier est vide (pour la démo)
+  const getFakeRecoltes = () => ([
+    { id: 1, date_recolte_prevue: new Date(Date.now() + 10 * 86400000).toISOString(), quantite_prevue: 500, type_poisson: 'Tilapia', observations: '', statut: 'PLANIFIE', date_creation: new Date().toISOString() },
+    { id: 2, date_recolte_prevue: new Date(Date.now() + 5 * 86400000).toISOString(), quantite_prevue: 300, type_poisson: 'Silure', observations: '', statut: 'PLANIFIE', date_creation: new Date().toISOString() },
+    { id: 3, date_recolte_prevue: new Date(Date.now() + 2 * 86400000).toISOString(), quantite_prevue: 200, type_poisson: 'Carpe', observations: '', statut: 'PLANIFIE', date_creation: new Date().toISOString() },
+  ]);
+  const getFakeIntrants = () => ([
+    { id: 1, date_avance_prevue: new Date(Date.now() + 12 * 86400000).toISOString(), montant_avance: 120000, type_intrant: 'Alimentation', quantite_intrant: 100, observations: '', statut: 'PLANIFIE', date_creation: new Date().toISOString() },
+    { id: 2, date_avance_prevue: new Date(Date.now() + 6 * 86400000).toISOString(), montant_avance: 80000, type_intrant: 'Engrais', quantite_intrant: 50, observations: '', statut: 'PLANIFIE', date_creation: new Date().toISOString() },
+    { id: 3, date_avance_prevue: new Date(Date.now() + 1 * 86400000).toISOString(), montant_avance: 50000, type_intrant: 'Médicaments', quantite_intrant: 20, observations: '', statut: 'PLANIFIE', date_creation: new Date().toISOString() },
+  ]);
+
+  // Filtrage calendrier récolte
+  const getFilteredRecolte = () => {
+    const data = (bassin && bassin.calendrier_recolte && bassin.calendrier_recolte.length > 0) ? bassin.calendrier_recolte : getFakeRecoltes();
+    if (recolteFilter === 'all') return data;
+    const today = new Date();
+    return data.filter(item => {
+      const date = new Date(item.date_recolte_prevue);
+      const diff = Math.ceil((date.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+      if (recolteFilter === 'plus_semaine') return diff > 7;
+      if (recolteFilter === 'dans_semaine') return diff <= 7 && diff > 3;
+      if (recolteFilter === 'dans_3j') return diff <= 3 && diff >= 0;
+      return true;
+    });
+  };
+  // Filtrage calendrier intrants
+  const getFilteredIntrants = () => {
+    const data = (bassin && bassin.calendrier_intrants && bassin.calendrier_intrants.length > 0) ? bassin.calendrier_intrants : getFakeIntrants();
+    if (intrantFilter === 'all') return data;
+    const today = new Date();
+    return data.filter(item => {
+      const date = new Date(item.date_avance_prevue);
+      const diff = Math.ceil((date.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+      if (intrantFilter === 'plus_semaine') return diff > 7;
+      if (intrantFilter === 'dans_semaine') return diff <= 7 && diff > 3;
+      if (intrantFilter === 'dans_3j') return diff <= 3 && diff >= 0;
+      return true;
+    });
+  };
   
   // États pour les formulaires des calendriers
   const [recolteForm, setRecolteForm] = useState({
@@ -743,10 +788,17 @@ const BassinDetailsPage: React.FC = () => {
             </Button>
           </div>
         </CardHeader>
+        {/* Filtres */}
+        <div className="flex gap-2 mb-4">
+          <button className={`px-4 py-2 rounded ${recolteFilter === 'all' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`} onClick={() => setRecolteFilter('all')}>Toutes</button>
+          <button className={`px-4 py-2 rounded ${recolteFilter === 'plus_semaine' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`} onClick={() => setRecolteFilter('plus_semaine')}>Plus d'une semaine</button>
+          <button className={`px-4 py-2 rounded ${recolteFilter === 'dans_semaine' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`} onClick={() => setRecolteFilter('dans_semaine')}>Dans une semaine</button>
+          <button className={`px-4 py-2 rounded ${recolteFilter === 'dans_3j' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`} onClick={() => setRecolteFilter('dans_3j')}>Dans les 3 jours</button>
+        </div>
         <CardBody>
           <div className="space-y-4">
-            {bassin.calendrier_recolte && bassin.calendrier_recolte.length > 0 ? (
-              bassin.calendrier_recolte.map((recolte, index) => (
+            {getFilteredRecolte().length > 0 ? (
+              getFilteredRecolte().map((recolte, index) => (
                 <div key={recolte.id} className="border rounded-lg p-4">
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div>
@@ -808,10 +860,17 @@ const BassinDetailsPage: React.FC = () => {
             </Button>
           </div>
         </CardHeader>
+        {/* Filtres */}
+        <div className="flex gap-2 mb-4">
+          <button className={`px-4 py-2 rounded ${intrantFilter === 'all' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`} onClick={() => setIntrantFilter('all')}>Toutes</button>
+          <button className={`px-4 py-2 rounded ${intrantFilter === 'plus_semaine' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`} onClick={() => setIntrantFilter('plus_semaine')}>Plus d'une semaine</button>
+          <button className={`px-4 py-2 rounded ${intrantFilter === 'dans_semaine' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`} onClick={() => setIntrantFilter('dans_semaine')}>Dans une semaine</button>
+          <button className={`px-4 py-2 rounded ${intrantFilter === 'dans_3j' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`} onClick={() => setIntrantFilter('dans_3j')}>Dans les 3 jours</button>
+        </div>
         <CardBody>
           <div className="space-y-4">
-            {bassin.calendrier_intrants && bassin.calendrier_intrants.length > 0 ? (
-              bassin.calendrier_intrants.map((intrant, index) => (
+            {getFilteredIntrants().length > 0 ? (
+              getFilteredIntrants().map((intrant, index) => (
                 <div key={intrant.id} className="border rounded-lg p-4">
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div>

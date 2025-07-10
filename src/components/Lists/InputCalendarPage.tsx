@@ -15,6 +15,22 @@ const InputCalendarPage = () => {
     { id: 11, bassin: 'Bassin K', intrant: 'Engrais', date: '2024-06-17', montant: 95000, statut: 'À venir' },
     { id: 12, bassin: 'Bassin L', intrant: 'Produit sanitaire', date: '2024-06-16', montant: 65000, statut: 'À venir' },
   ]);
+  // Ajout de l'état pour le filtre
+  const [filter, setFilter] = useState('all');
+
+  // Fonction de filtrage selon la date
+  const getFilteredCalendar = () => {
+    if (filter === 'all') return mockInputCalendar;
+    const today = new Date();
+    return mockInputCalendar.filter(item => {
+      const date = new Date(item.date);
+      const diff = Math.ceil((date - today) / (1000 * 60 * 60 * 24));
+      if (filter === 'plus_semaine') return diff > 7;
+      if (filter === 'dans_semaine') return diff <= 7 && diff > 3;
+      if (filter === 'dans_3j') return diff <= 3 && diff >= 0;
+      return true;
+    });
+  };
 
   const handleDeleteInput = (id) => {
     setMockInputCalendar(prev => prev.filter(item => item.id !== id));
@@ -27,6 +43,33 @@ const InputCalendarPage = () => {
     <div className="pt-[70px] pb-5 px-4 max-w-7xl mx-auto">
       <div className="bg-white rounded shadow p-4 overflow-x-auto flex flex-col items-center w-full">
       <h2 className="text-lg font-bold mb-4 text-center w-full">Calendrier d'avances sur intrants</h2>
+      {/* Filtres */}
+      <div className="flex gap-2 mb-4">
+        <button
+          className={`px-4 py-2 rounded ${filter === 'all' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+          onClick={() => setFilter('all')}
+        >
+          Toutes
+        </button>
+        <button
+          className={`px-4 py-2 rounded ${filter === 'plus_semaine' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+          onClick={() => setFilter('plus_semaine')}
+        >
+          Plus d'une semaine
+        </button>
+        <button
+          className={`px-4 py-2 rounded ${filter === 'dans_semaine' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+          onClick={() => setFilter('dans_semaine')}
+        >
+          Dans une semaine
+        </button>
+        <button
+          className={`px-4 py-2 rounded ${filter === 'dans_3j' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+          onClick={() => setFilter('dans_3j')}
+        >
+          Dans les 3 jours
+        </button>
+      </div>
       <div className="w-full flex justify-center mb-4">
         <button
           className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded shadow text-base"
@@ -47,7 +90,7 @@ const InputCalendarPage = () => {
           </tr>
         </thead>
         <tbody>
-          {mockInputCalendar.map((item, idx) => {
+          {getFilteredCalendar().map((item, idx) => {
             const today = new Date().toISOString().slice(0, 10);
             let color = '';
             let statutLabel = item.statut;
