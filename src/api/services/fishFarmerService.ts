@@ -41,7 +41,9 @@ const mockFishFarmers: IFishFarmer[] = [
         id: 1,
         nom: "Département Central"
       }
-    }
+    },
+    eligibility_status: 'GO',
+    eligibility_reason: ''
   },
   {
     id: 2,
@@ -80,7 +82,50 @@ const mockFishFarmers: IFishFarmer[] = [
         id: 2,
         nom: "Département Nord"
       }
-    }
+    },
+    eligibility_status: 'NON_GO',
+    eligibility_reason: 'Documents manquants'
+  },
+  {
+    id: 3,
+    username: "pisciculteur3",
+    email: "pisciculteur3@example.com",
+    password: "password789",
+    prenom: "Ali",
+    nom: "Traoré",
+    telephone: "555123456",
+    status: "inactif",
+    compte_actif: false,
+    eligible_soa: false,
+    date_activation: null,
+    admin_activation: null,
+    raison_desactivation: "Non respect des critères",
+    otp_code: null,
+    otp_expire_at: null,
+    derniereConnexion: null,
+    createdAt: "2024-01-18T08:00:00Z",
+    updatedAt: "2024-01-18T08:00:00Z",
+    roleId: 2,
+    role: {
+      id: 2,
+      nom: "Pisciculteur",
+      description: "Gestion des bassins et opérations courantes",
+      code: "PISCICULTEUR",
+      niveau: 10,
+      est_actif: true,
+      createdAt: "2024-01-01T00:00:00Z",
+      updatedAt: "2024-01-01T00:00:00Z"
+    },
+    region: {
+      id: 3,
+      nom: "Région Sud",
+      departement: {
+        id: 3,
+        nom: "Département Sud"
+      }
+    },
+    eligibility_status: 'NON_GO_CONDITIONNE',
+    eligibility_reason: 'Doit fournir un justificatif de formation'
   }
 ];
 

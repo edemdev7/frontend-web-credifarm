@@ -1,5 +1,5 @@
 import { IMember } from "../components/types/member";
-import { IWaterBasin, IBassin, ICalendrierRecolte, ICalendrierIntrants } from "../components/types/waterBasin";
+import { IBassin, ICalendrierRecolte, ICalendrierIntrants } from "../components/types/waterBasin";
 import { IFishSpecies, IFishFood } from "../components/types/fish";
 
 // Données mockées pour simuler les réponses API
@@ -129,7 +129,8 @@ export const mockData = {
       images: [
         "https://via.placeholder.com/150",
         "https://via.placeholder.com/150"
-      ]
+      ],
+      ferme: "Ferme de l'Est"
     },
     {
       id: 2,
@@ -158,7 +159,8 @@ export const mockData = {
       },
       images: [
         "https://via.placeholder.com/150"
-      ]
+      ],
+      ferme: "Ferme du Nord"
     }
   ]
 };

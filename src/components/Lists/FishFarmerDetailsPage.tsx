@@ -205,6 +205,37 @@ const FishFarmerDetailsPage: React.FC = () => {
     return Math.min(score, 100);
   };
 
+  // Fonction utilitaire pour afficher le statut d'éligibilité
+  const renderEligibilityStatus = (fishFarmer: IFishFarmer) => {
+    if (!fishFarmer.eligibility_status) return '-';
+    let color: 'success' | 'danger' | 'warning' = 'success';
+    let label = '';
+    switch (fishFarmer.eligibility_status) {
+      case 'GO':
+        color = 'success';
+        label = 'Go';
+        break;
+      case 'NON_GO':
+        color = 'danger';
+        label = 'Non Go';
+        break;
+      case 'NON_GO_CONDITIONNE':
+        color = 'warning';
+        label = 'Non Go conditionné';
+        break;
+      default:
+        label = '-';
+    }
+    return (
+      <div className="flex flex-col items-start">
+        <Chip color={color} size="sm" variant="flat">{label}</Chip>
+        {fishFarmer.eligibility_status === 'NON_GO' && fishFarmer.eligibility_reason && (
+          <span className="text-xs text-red-500 mt-1">{fishFarmer.eligibility_reason}</span>
+        )}
+      </div>
+    );
+  };
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-64 mt-20">
@@ -300,14 +331,8 @@ const FishFarmerDetailsPage: React.FC = () => {
               </Chip>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Éligible SOA</label>
-              <Chip
-                color={fishFarmer.eligible_soa ? "success" : "default"}
-                size="sm"
-                variant="flat"
-              >
-                {fishFarmer.eligible_soa ? "Oui" : "Non"}
-              </Chip>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Statut d'éligibilité</label>
+              {renderEligibilityStatus(fishFarmer)}
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Score d'éligibilité</label>
@@ -546,14 +571,6 @@ const BasinsModal: React.FC<{
                       <h3 className="font-medium">{basin.nom}</h3>
                       <p className="text-sm text-gray-500">{basin.type} - {basin.superficie} m²</p>
                     </div>
-                    <Button
-                      color="warning"
-                      size="sm"
-                      startContent={<UserMinus className="w-4 h-4" />}
-                      onPress={() => onUnassignBasin(basin.id, fishFarmer.id)}
-                    >
-                      Désassigner
-                    </Button>
                   </div>
                 </div>
               ))}

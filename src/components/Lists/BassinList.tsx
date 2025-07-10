@@ -56,6 +56,7 @@ const COLUMNS = [
   { name: "Statut", uid: "statut" },
   { name: "Région", uid: "region" },
   { name: "Pisciculteur", uid: "pisciculteur" },
+  { name: "Ferme", uid: "ferme" },
 ];
 
 interface Region {
@@ -321,6 +322,8 @@ const BassinList: FC = () => {
             }
           </div>
         );
+      case "ferme":
+        return <div>{bassin.ferme || 'Non spécifiée'}</div>;
       default:
         const value = bassin[columnKey as keyof IBassin];
         return <div>{typeof value === 'string' || typeof value === 'number' ? value : '-'}</div>;

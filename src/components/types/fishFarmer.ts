@@ -38,6 +38,8 @@ export interface IFishFarmer {
       nom: string;
     };
   } | null;
+  eligibility_status?: 'GO' | 'NON_GO' | 'NON_GO_CONDITIONNE';
+  eligibility_reason?: string;
 }
 
 export interface INewFishFarmer {
@@ -56,6 +58,8 @@ export interface IUpdateFishFarmerStatus {
   compte_actif: boolean;
   eligible_soa: boolean;
   raison_desactivation?: string;
+  eligibility_status?: 'GO' | 'NON_GO' | 'NON_GO_CONDITIONNE';
+  eligibility_reason?: string;
 }
 
 export interface IFishFarmerFilters {

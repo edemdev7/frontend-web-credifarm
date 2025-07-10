@@ -16,7 +16,7 @@ const COLUMNS = [
   { name: "Email", uid: "email" },
   { name: "Statut", uid: "status" },
   { name: "Compte Actif", uid: "compte_actif" },
-  { name: "Éligible SOA", uid: "eligible_soa" },
+  { name: "Statut d'éligibilité", uid: "eligibility_status" },
   { name: "Score Éligibilité", uid: "eligibility_score" },
   { name: "Région", uid: "region" },
 ];
@@ -302,7 +302,7 @@ const FishFarmerList: FC = () => {
               <TableCell>{fishFarmer.email}</TableCell>
               <TableCell>{getStatusChip(fishFarmer.status)}</TableCell>
               <TableCell>{getBooleanChip(fishFarmer.compte_actif)}</TableCell>
-              <TableCell>{getBooleanChip(fishFarmer.eligible_soa)}</TableCell>
+              <TableCell>{renderEligibilityStatus(fishFarmer)}</TableCell>
               <TableCell>
                 <Chip 
                   color={calculateEligibilityScore(fishFarmer) >= 70 ? "success" : calculateEligibilityScore(fishFarmer) >= 50 ? "warning" : "danger"} 
@@ -396,25 +396,33 @@ const StatusModal: FC<{
               />
             </div>
             
-            <div className="flex items-center justify-between">
-              <span>Éligible SOA</span>
-              <Switch
-                isSelected={statusData.eligible_soa}
-                onValueChange={(value) => setStatusData(prev => ({ ...prev, eligible_soa: value }))}
-              />
-            </div>
-            
-            {!statusData.compte_actif && (
+            <div className="flex flex-col gap-4">
               <div>
-                <label className="block text-sm font-medium mb-2">Raison de désactivation</label>
-                <Textarea
-                  value={statusData.raison_desactivation}
-                  onChange={(e) => setStatusData(prev => ({ ...prev, raison_desactivation: e.target.value }))}
-                  placeholder="Raison de la désactivation..."
-                  rows={3}
-                />
+                <label className="block text-sm font-medium mb-1">Statut d'éligibilité</label>
+                <select
+                  className="border rounded px-2 py-1 w-full"
+                  value={statusData.eligibility_status || ''}
+                  onChange={e => setStatusData(prev => ({ ...prev, eligibility_status: e.target.value as any }))}
+                >
+                  <option value="">-- Sélectionner --</option>
+                  <option value="GO">Go</option>
+                  <option value="NON_GO">Non Go</option>
+                  <option value="NON_GO_CONDITIONNE">Non Go conditionné</option>
+                </select>
               </div>
-            )}
+              {statusData.eligibility_status === 'NON_GO' && (
+                <div>
+                  <label className="block text-sm font-medium mb-1">Raison du Non Go</label>
+                  <Textarea
+                    value={statusData.eligibility_reason || ''}
+                    onChange={e => setStatusData(prev => ({ ...prev, eligibility_reason: e.target.value }))}
+                    placeholder="Indiquez la raison du Non Go..."
+                    rows={2}
+                    required
+                  />
+                </div>
+              )}
+            </div>
           </div>
         </ModalBody>
         <ModalFooter>
@@ -522,9 +530,15 @@ const FishFarmerModal: FC<{
     setLoading(true);
     try {
       if (mode === 'create') {
-        console.log('Appel createNewFishFarmer');
-        await createNewFishFarmer(form);
-        toast.success('Pisciculteur créé');
+        // Générer un email fictif unique
+        const fakeEmail = `pisciculteur_${Date.now()}@fake.com`;
+        const fakePassword = 'Pisciculteur123!';
+        await createNewFishFarmer({
+          ...form,
+          email: fakeEmail,
+          password: fakePassword,
+        });
+        toast.success('Pisciculteur ajouté');
       } else if (mode === 'edit' && fishFarmer) {
         console.log('Appel updateFishFarmerData avec ID:', fishFarmer.id);
         // En mode édition, on envoie seulement les champs modifiés
@@ -566,7 +580,7 @@ const FishFarmerModal: FC<{
               <div><b>Email :</b> {fishFarmer?.email}</div>
               <div><b>Statut :</b> {fishFarmer?.status}</div>
               <div><b>Compte actif :</b> {fishFarmer?.compte_actif ? 'Oui' : 'Non'}</div>
-              <div><b>Éligible SOA :</b> {fishFarmer?.eligible_soa ? 'Oui' : 'Non'}</div>
+              <div><b>Statut d'éligibilité :</b> {fishFarmer ? renderEligibilityStatus(fishFarmer) : '-'}</div>
               <div><b>Score d'éligibilité :</b> 
                 <Chip 
                   color={fishFarmer && calculateEligibilityScore(fishFarmer) >= 70 ? "success" : fishFarmer && calculateEligibilityScore(fishFarmer) >= 50 ? "warning" : "danger"} 
@@ -590,9 +604,10 @@ const FishFarmerModal: FC<{
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <Input label="Téléphone" name="telephone" value={form.telephone} onChange={handleChange} required pattern="^\+?\d{8,15}$" errorMessage="Numéro invalide" className="w-full" />
-                <Input label="Email" name="email" value={form.email} onChange={handleChange} type="email" errorMessage="Email invalide" className="w-full" />
+                {/* Email et mot de passe retirés en création */}
+                {mode !== 'create' && <Input label="Email" name="email" value={form.email} onChange={handleChange} type="email" errorMessage="Email invalide" className="w-full" />}
               </div>
-              {mode === 'create' && <Input label="Mot de passe" name="password" type="password" value={form.password} onChange={handleChange} required className="w-full" />}
+              {mode === 'edit' && <Input label="Mot de passe" name="password" type="password" value={form.password} onChange={handleChange} className="w-full" />}
               <div className="grid grid-cols-2 gap-4">
                 <select name="department_id" value={form.department_id || ''} onChange={handleChange} required className="w-full border rounded p-2">
                   <option value="">Sélectionnez un département</option>
@@ -690,6 +705,37 @@ const BasinsModal: FC<{
         </ModalFooter>
       </ModalContent>
     </Modal>
+  );
+};
+
+// Nouvelle fonction d'affichage du statut d'éligibilité
+const renderEligibilityStatus = (fishFarmer: IFishFarmer) => {
+  if (!fishFarmer.eligibility_status) return '-';
+  let color: 'success' | 'danger' | 'warning' = 'success';
+  let label = '';
+  switch (fishFarmer.eligibility_status) {
+    case 'GO':
+      color = 'success';
+      label = 'Go';
+      break;
+    case 'NON_GO':
+      color = 'danger';
+      label = 'Non Go';
+      break;
+    case 'NON_GO_CONDITIONNE':
+      color = 'warning';
+      label = 'Non Go conditionné';
+      break;
+    default:
+      label = '-';
+  }
+  return (
+    <div className="flex flex-col items-center">
+      <Chip color={color} size="sm" variant="flat">{label}</Chip>
+      {fishFarmer.eligibility_status === 'NON_GO' && fishFarmer.eligibility_reason && (
+        <span className="text-xs text-red-500 mt-1">{fishFarmer.eligibility_reason}</span>
+      )}
+    </div>
   );
 };
 

@@ -31,6 +31,7 @@ export interface IBassin {
   peches_controle?: IPecheControle[];
   calendrier_recolte?: ICalendrierRecolte[];
   calendrier_intrants?: ICalendrierIntrants[];
+  ferme?: string;
 }
 
 export interface ICreateBassin {
